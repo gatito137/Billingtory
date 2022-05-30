@@ -1,11 +1,10 @@
 package main;
 
-import presentation.Loading;
+import presentation.Menu;
 
 public class Billintory {
     public static void main(String[] args) {
-        Loading menu = new Loading();
-        menu.setVisible(true);
-        menu.run();
+        Menu w = new Menu();
+        w.setVisible(true);
     }
 }
