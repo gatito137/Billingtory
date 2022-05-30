@@ -193,7 +193,7 @@ public class Principle extends javax.swing.JPanel {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(chkChangeName)
                                     .addComponent(btnSearcher))
-                                .addGap(0, 5, Short.MAX_VALUE)))))
+                                .addGap(0, 29, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -214,7 +214,7 @@ public class Principle extends javax.swing.JPanel {
                     .addComponent(jLabel2)
                     .addComponent(jButton1))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 281, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
