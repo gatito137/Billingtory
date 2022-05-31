@@ -2,8 +2,6 @@ package presentation;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -61,10 +59,10 @@ public class Products extends javax.swing.JPanel {
         m.setTitle("Llenando tabla...");
         //Fill in the table
         m.c.query.delete(0, m.c.query.length());
-        m.c.query.append("select mp.Code, mp.Description, mp.isBox, ");
-        m.c.query.append("pp.Name as Principle, mp.Packsize, p.UPC, p.Lot, ");
-        m.c.query.append("p.EntryDate, p.ExpirationDate, l.Name as Laboratory, ");
-        m.c.query.append("p.Units, p.PurchasePrice, p.SalePrice, p.Status ");
+        m.c.query.append("select mp.Code as Código, mp.Description as Descripción, mp.isBox as EsPadre, ");
+        m.c.query.append("pp.Name as PrincipioActivo, mp.Packsize, p.UPC, p.Lot as Lote, ");
+        m.c.query.append("p.EntryDate as FechaRegistro, p.ExpirationDate as FechaVencimiento, l.Name as Laboratorio, ");
+        m.c.query.append("p.Units as Existencia, p.PurchasePrice as PrecioCompra, p.SalePrice as PrecioVenta, p.Status ");
         m.c.query.append("from Products as p ");
         m.c.query.append("inner join MasterProducts as mp on p.CodeMaster = mp.id ");
         m.c.query.append("inner join Principle as pp on pp.id = mp.Principle ");
@@ -203,6 +201,7 @@ public class Products extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tabPrincipal.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         tabPrincipal.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tabPrincipalMouseClicked(evt);
