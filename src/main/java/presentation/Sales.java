@@ -1,9 +1,14 @@
 package presentation;
 
+import java.awt.*;
+import java.awt.print.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-public class Sales extends javax.swing.JPanel {
-    private Menu menu;
+public class Sales extends javax.swing.JPanel implements Printable{
+    private Menu m;
     
     public Sales() {
         initComponents();
@@ -17,10 +22,43 @@ public class Sales extends javax.swing.JPanel {
         Table.addColumn("SubTotal");
         
         tabSales.setModel(Table);
+        
+        lblDate.setText(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").format(LocalDateTime.now()));
     }
     
     protected void sendMenu(Menu menu){
-        this.menu = menu;
+        this.m = menu;
+    }
+    
+    protected String ValidateInvoice(){
+        //Sum the subtotals
+        for(int rows = 0; rows < tabSales.getRowCount(); rows++){
+            lblTotal.setText(String.valueOf(Float.parseFloat(lblTotal.getText()) + Float.parseFloat(tabSales.getValueAt(rows, 6).toString())));
+        }
+        
+        //Get correlative
+        m.c.query.delete(0, m.c.query.length());
+        m.c.query.append("select id from Invoices order by id desc limit 1;");
+        if(m.execute.getNat(m.c.query.toString()) == -1){
+            lblCorrelative.setText("1");
+        }else{
+            lblCorrelative.setText(String.valueOf(m.execute.getNat(m.c.query.toString() + 1)));
+        }
+        
+        if(lblName.getText().equals("[Name]")){
+            return "Debe ingresar el nombre del cliente.";
+        }
+        if(lblNit.getText().equals("[Nit]")){
+            return "Debe ingresar un nit válido.";
+        }
+        if(lblTel.getText().equals("Tel")){
+            return "Debe ingresar un teléfono válido";
+        }
+        if(lblMail.getText().equals("Mail")){
+            return "Debe ingresar un correo válido.";
+        }
+        
+        return "";
     }
 
     @SuppressWarnings("unchecked")
@@ -38,7 +76,7 @@ public class Sales extends javax.swing.JPanel {
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
+        lblName = new javax.swing.JLabel();
         lblNit = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tabSales = new javax.swing.JTable();
@@ -67,7 +105,7 @@ public class Sales extends javax.swing.JPanel {
 
         jLabel5.setText("Correlativo:");
 
-        lblCorrelative.setText("No.");
+        lblCorrelative.setText("[Correlative]");
 
         lblDate.setText("Date");
 
@@ -79,7 +117,7 @@ public class Sales extends javax.swing.JPanel {
 
         jLabel9.setText("Correo:");
 
-        jLabel10.setText("lblName");
+        lblName.setText("[Name]");
 
         lblNit.setText("[Nit]");
 
@@ -106,9 +144,23 @@ public class Sales extends javax.swing.JPanel {
         lblTotal.setFont(new java.awt.Font("Serif", 0, 16)); // NOI18N
         lblTotal.setText("[Total]");
 
+        btnPrint.setBackground(new java.awt.Color(0, 0, 102));
+        btnPrint.setForeground(new java.awt.Color(255, 255, 255));
         btnPrint.setText("Imprimir");
+        btnPrint.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPrintActionPerformed(evt);
+            }
+        });
 
+        btnRemove.setBackground(new java.awt.Color(0, 0, 102));
+        btnRemove.setForeground(new java.awt.Color(255, 255, 255));
         btnRemove.setText("Remover");
+        btnRemove.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveActionPerformed(evt);
+            }
+        });
 
         lblLogo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagine/logo.jpg"))); // NOI18N
 
@@ -152,7 +204,7 @@ public class Sales extends javax.swing.JPanel {
                             .addComponent(jLabel7))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel10)
+                            .addComponent(lblName)
                             .addComponent(lblNit))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -165,10 +217,11 @@ public class Sales extends javax.swing.JPanel {
                         .addGap(77, 77, 77)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblDate)
-                            .addComponent(jLabel5))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblCorrelative)
-                        .addGap(41, 41, 41))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(lblCorrelative)))
+                        .addGap(35, 35, 35))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -186,18 +239,19 @@ public class Sales extends javax.swing.JPanel {
                     .addComponent(lblLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(lblCorrelative)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(jLabel6)
-                                .addComponent(jLabel10))
+                                .addComponent(lblName))
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(jLabel7)
                                 .addComponent(lblNit)))
                         .addGroup(layout.createSequentialGroup()
-                            .addComponent(jLabel5)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel5)
+                                .addComponent(lblCorrelative))
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(lblDate)))
                     .addGroup(layout.createSequentialGroup()
@@ -220,11 +274,42 @@ public class Sales extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
+        int Row = tabSales.getSelectedRow();
+        if(Row < 0){
+            JOptionPane.showMessageDialog(null, "Debe seleccionar un producto para eliminar.");
+            return;
+        }
+        
+        if(JOptionPane.showConfirmDialog(null,"¿Está seguro que desea eliminar esta venta de la factura?", "", JOptionPane.OK_OPTION) != JOptionPane.OK_OPTION){
+            return;
+        }
+        
+        DefaultTableModel removeRow = (DefaultTableModel) tabSales.getModel();
+        removeRow.removeRow(Row);
+        tabSales.setModel(removeRow);
+    }//GEN-LAST:event_btnRemoveActionPerformed
+
+    private void btnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintActionPerformed
+        lblDate.setText(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").format(LocalDateTime.now()));
+        
+        PrinterJob job = PrinterJob.getPrinterJob();
+        
+        if(job.printDialog()){
+            try{
+                job.print();
+            }catch(PrinterException e){
+                JOptionPane.showMessageDialog(null, "No se ha podido realizar la impresión.");
+            }
+        }else{
+            JOptionPane.showMessageDialog(null, "Se ha cancelado la impresión.");
+        }
+    }//GEN-LAST:event_btnPrintActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnPrint;
     private javax.swing.JButton btnRemove;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -239,9 +324,23 @@ public class Sales extends javax.swing.JPanel {
     private javax.swing.JLabel lblDate;
     private javax.swing.JLabel lblLogo;
     private javax.swing.JLabel lblMail;
+    private javax.swing.JLabel lblName;
     private javax.swing.JLabel lblNit;
     private javax.swing.JLabel lblTel;
     private javax.swing.JLabel lblTotal;
     protected javax.swing.JTable tabSales;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public int print(Graphics grphcs, PageFormat pf, int i) throws PrinterException {
+        if(i == 0){
+            Graphics2D newGraphic = (Graphics2D) grphcs;
+            newGraphic.translate(pf.getImageableX(), pf.getImageableY());
+            printAll(newGraphic);
+            
+            return PAGE_EXISTS;
+        }else{
+            return NO_SUCH_PAGE;
+        }
+    }
 }
