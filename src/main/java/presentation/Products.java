@@ -1,5 +1,9 @@
 package presentation;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -41,7 +45,6 @@ public class Products extends javax.swing.JPanel {
         txtPacksize.setText("1");
         txtLot.setText("");
         txtUPC.setText("");
-        txtDate.setText("");
         lstLab.setSelectedIndex(0);
         txtUnits.setText("");
         txtPurchasePrice.setText("");
@@ -165,7 +168,6 @@ public class Products extends javax.swing.JPanel {
         jLabel5 = new javax.swing.JLabel();
         txtLot = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        txtDate = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         lstLab = new javax.swing.JComboBox<>();
         jLabel8 = new javax.swing.JLabel();
@@ -186,6 +188,7 @@ public class Products extends javax.swing.JPanel {
         jLabel15 = new javax.swing.JLabel();
         txtUPC = new javax.swing.JTextField();
         btnRefresh = new javax.swing.JButton();
+        txtDate = new com.toedter.calendar.JDateChooser();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
@@ -302,6 +305,8 @@ public class Products extends javax.swing.JPanel {
             }
         });
 
+        txtDate.setDateFormatString("yyyy-MM-dd");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -332,7 +337,7 @@ public class Products extends javax.swing.JPanel {
                         .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnSearcher, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -343,17 +348,16 @@ public class Products extends javax.swing.JPanel {
                             .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel13, javax.swing.GroupLayout.Alignment.TRAILING))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(txtDate)
-                                .addComponent(lstLab, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(txtUnits)
-                                .addComponent(txtPurchasePrice, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
-                                .addComponent(txtSalePrice))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(lstLab, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtUnits)
+                            .addComponent(txtPurchasePrice, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                            .addComponent(txtSalePrice)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(txtGain, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel14))))
+                                .addComponent(jLabel14))
+                            .addComponent(txtDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addComponent(btnRefresh, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jLabel11)
@@ -387,9 +391,9 @@ public class Products extends javax.swing.JPanel {
                             .addComponent(jLabel10)
                             .addComponent(txtPacksize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel6))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel6)
+                            .addComponent(txtDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lstLab, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -541,7 +545,7 @@ public class Products extends javax.swing.JPanel {
             m.c.query.delete(0, m.c.query.length());
             m.c.query.append("update Products set ");
             m.c.query.append("EntryDate = now(), ");
-            m.c.query.append("ExpirationDate = '").append(txtDate.getText()).append("', ");
+            m.c.query.append("ExpirationDate = '").append(new java.sql.Date(txtDate.getDate().getTime())).append("', ");
             m.c.query.append("Laboratory = '").append(m.execute.getNat("select id from Laboratories where Name = '" + lstLab.getSelectedItem() + "';")).append("', ");
             m.c.query.append("Status = '").append(lstStatus.getSelectedIndex()).append("', ");
             m.c.query.append("Units = '").append(txtUnits.getText()).append("', ");
@@ -560,7 +564,7 @@ public class Products extends javax.swing.JPanel {
             m.c.query.append(id).append("', '");
             m.c.query.append(txtLot.getText()).append("', ");
             m.c.query.append("now()").append(", '");
-            m.c.query.append(txtDate.getText()).append("', '");
+            m.c.query.append(new java.sql.Date(txtDate.getDate().getTime())).append("', '");
             m.c.query.append(m.execute.getNat("select id from Laboratories where Name = '" + lstLab.getSelectedItem() + "';")).append("', '");
             m.c.query.append(lstStatus.getSelectedIndex()).append("', '");
             m.c.query.append(txtUnits.getText()).append("', '");
@@ -591,8 +595,10 @@ public class Products extends javax.swing.JPanel {
         m.c.changeListIndex(lstPrinciple, tabPrincipal.getValueAt(Row, 3).toString());
         txtPacksize.setText(tabPrincipal.getValueAt(Row, 4).toString());
         txtUPC.setText(tabPrincipal.getValueAt(Row, 5).toString());
-        txtLot.setText(tabPrincipal.getValueAt(Row, 6).toString());        
-        txtDate.setText(tabPrincipal.getValueAt(Row, 8).toString());
+        txtLot.setText(tabPrincipal.getValueAt(Row, 6).toString());
+        try{
+            txtDate.setDate(new SimpleDateFormat("yyyy-MM-dd").parse(tabPrincipal.getValueAt(Row, 8).toString()));
+        }catch(ParseException e){}
         m.c.changeListIndex(lstLab, tabPrincipal.getValueAt(Row, 9).toString());
         txtUnits.setText(tabPrincipal.getValueAt(Row, 10).toString());
         txtPurchasePrice.setText(tabPrincipal.getValueAt(Row, 11).toString());
@@ -656,7 +662,7 @@ public class Products extends javax.swing.JPanel {
     private javax.swing.JComboBox<String> lstStatus;
     private javax.swing.JTable tabPrincipal;
     private javax.swing.JTextField txtCode;
-    private javax.swing.JTextField txtDate;
+    private com.toedter.calendar.JDateChooser txtDate;
     private javax.swing.JTextField txtDescription;
     private javax.swing.JTextField txtGain;
     private javax.swing.JTextField txtLot;
