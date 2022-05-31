@@ -317,6 +317,7 @@ public class Menu extends javax.swing.JFrame {
     private void btnSearcherActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearcherActionPerformed
         searcher.setSize(550, 450);
         searcher.setLocation(0, 0);
+        searcher.Refresh();
         
         pnlPrincipal.removeAll();
         pnlPrincipal.add(searcher);
