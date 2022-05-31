@@ -8,7 +8,7 @@ public class Menu extends javax.swing.JFrame {
     private final Laboratory laboratory = new Laboratory();
     private final Principle principles = new Principle();
     private final Searcher searcher = new Searcher();
-    private final Sales bill = new Sales();
+    protected final Sales bill = new Sales();
     public final CommonUse c = new CommonUse();
     public final Bridge execute = new Bridge();
     

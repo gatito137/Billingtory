@@ -1,14 +1,22 @@
 package presentation;
 
-import java.awt.Image;
-import javax.swing.ImageIcon;
-import javax.swing.Icon;
+import javax.swing.table.DefaultTableModel;
 
 public class Sales extends javax.swing.JPanel {
     private Menu menu;
     
     public Sales() {
         initComponents();
+        DefaultTableModel Table = new DefaultTableModel();
+        Table.addColumn("Código");
+        Table.addColumn("Lote");
+        Table.addColumn("Descripción");
+        Table.addColumn("Unidades");
+        Table.addColumn("Precio");
+        Table.addColumn("Descuento");
+        Table.addColumn("SubTotal");
+        
+        tabSales.setModel(Table);
     }
     
     protected void sendMenu(Menu menu){
@@ -33,7 +41,7 @@ public class Sales extends javax.swing.JPanel {
         jLabel10 = new javax.swing.JLabel();
         lblNit = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tabSales = new javax.swing.JTable();
         lblTel = new javax.swing.JLabel();
         lblMail = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
@@ -75,7 +83,7 @@ public class Sales extends javax.swing.JPanel {
 
         lblNit.setText("[Nit]");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tabSales.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -86,7 +94,7 @@ public class Sales extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tabSales);
 
         lblTel.setText("[Tel]");
 
@@ -227,7 +235,6 @@ public class Sales extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JLabel lblCorrelative;
     private javax.swing.JLabel lblDate;
     private javax.swing.JLabel lblLogo;
@@ -235,5 +242,6 @@ public class Sales extends javax.swing.JPanel {
     private javax.swing.JLabel lblNit;
     private javax.swing.JLabel lblTel;
     private javax.swing.JLabel lblTotal;
+    protected javax.swing.JTable tabSales;
     // End of variables declaration//GEN-END:variables
 }
