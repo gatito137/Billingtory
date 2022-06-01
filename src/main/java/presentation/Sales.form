@@ -82,7 +82,7 @@
                           <Component id="lblTel" min="-2" max="-2" attributes="0"/>
                           <Component id="lblMail" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="-2" pref="77" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="53" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="lblDate" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
@@ -234,11 +234,17 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="[Name]"/>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
+      </AuxValues>
     </Component>
     <Component class="javax.swing.JLabel" name="lblNit">
       <Properties>
         <Property name="text" type="java.lang.String" value="[Nit]"/>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
+      </AuxValues>
     </Component>
     <Container class="javax.swing.JScrollPane" name="jScrollPane1">
       <AuxValues>
@@ -268,11 +274,17 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="[Tel]"/>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
+      </AuxValues>
     </Component>
     <Component class="javax.swing.JLabel" name="lblMail">
       <Properties>
         <Property name="text" type="java.lang.String" value="[Mail]"/>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
+      </AuxValues>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel11">
       <Properties>

@@ -1,5 +1,6 @@
 package presentation;
 
+import java.awt.HeadlessException;
 import javax.swing.JOptionPane;
 
 public class Clients extends javax.swing.JPanel {
@@ -14,6 +15,10 @@ public class Clients extends javax.swing.JPanel {
     }
     
     protected void Refresh(String Conditions){
+        chkChangeName.setEnabled(false);
+        chkChangeName.setSelected(false);
+        btnRegistered.setText("Registrar");
+        
         m.setTitle("Administrar clientes");
         m.c.query.delete(0, m.c.query.length());
         m.c.query.append("select Name, Nit, Tel, Mail, Status ");
@@ -21,6 +26,56 @@ public class Clients extends javax.swing.JPanel {
         m.c.query.append(Conditions);
         m.c.query.append("order by Name;");
         tabClients.setModel(m.execute.getTable(new javax.swing.table.DefaultTableModel(), m.c.query.toString()));
+        
+        txtName.setText("");
+        txtNit.setText("");
+        txtTel.setText("");
+        txtMail.setText("");
+        lstStatus.setSelectedIndex(0);
+    }
+          
+    private void SaveData(String Name){
+        //Validate if it does exists
+        m.setTitle("Validando existencia...");
+        m.c.query.delete(0, m.c.query.length());
+        m.c.query.append("select count(1) from Clients where Name = '").append(txtName.getText()).append("';");
+        if(m.execute.getNat(m.c.query.toString()) > 0){
+            //Get id
+            m.setTitle("Obteniendo id...");
+            m.c.query.delete(0, m.c.query.length());
+            m.c.query.append("select id from Clients where Name = '").append(txtName.getText()).append("';");
+            int id = m.execute.getNat(m.c.query.toString());
+            
+            //Update data
+            m.setTitle("Actualizando data...");
+            m.c.query.delete(0, m.c.query.length());
+            m.c.query.append("update Clients set ");
+            m.c.query.append("Name = '").append(Name).append("', ");
+            m.c.query.append("Nit = '").append(txtNit.getText()).append("', ");
+            m.c.query.append("Tel = '").append(txtTel.getText()).append("', ");
+            m.c.query.append("Mail = '").append(txtMail.getText()).append("', ");
+            m.c.query.append("Status = '").append(lstStatus.getSelectedIndex()).append("' ");
+            m.c.query.append("where id = '").append(id).append("';");
+            m.execute.executeQuery(m.c.query.toString());
+            
+            Refresh("");
+            JOptionPane.showMessageDialog(null, "Los datos se han actualizado con éxito.");
+            return;
+        }
+        
+        //Save data
+        m.setTitle("Guardando data...");
+        m.c.query.delete(0, m.c.query.length());
+        m.c.query.append("insert into Clients(Name, Nit, Tel, Mail, Status) values ('");
+        m.c.query.append(txtName.getText()).append("', '");
+        m.c.query.append(txtNit.getText()).append("', '");
+        m.c.query.append(txtTel.getText()).append("', '");
+        m.c.query.append(txtMail.getText()).append("', '");
+        m.c.query.append(lstStatus.getSelectedIndex()).append("');");
+        m.execute.executeQuery(m.c.query.toString());
+        
+        Refresh("");
+        JOptionPane.showMessageDialog(null, "Los datos han sido guardados con éxito.");        
     }
     
     private String ValidateQuery(String query){
@@ -29,52 +84,8 @@ public class Clients extends javax.swing.JPanel {
         }else if(query.substring(query.length() - 4, query.length()).equals("and ")){
             return "";
         }else{
-            return "";
+            return "and ";
         }
-    }
-    
-    private void setCleanTexts(){
-        txtName.setText(m.c.getCleanText(txtName.getText()));
-        txtNit.setText(m.c.getNat(txtNit.getText()).toString());
-        txtTel.setText(m.c.getNat(txtTel.getText()).toString());
-        txtMail.setText(m.c.validateMail(txtMail.getText()));
-    }
-    
-    private String ValidateConditions(){
-        setCleanTexts();
-        
-        m.c.query.delete(0, m.c.query.length());
-        m.c.query.append("where ");
-        
-        //Validate name
-        if(!txtName.getText().equals("")){
-            m.c.query.append(ValidateQuery(m.c.query.toString()));
-            m.c.query.append("Name like '%").append(txtName.getText()).append("%' ");
-        }
-        
-        //Validate Nit
-        if(!txtNit.getText().equals("")){
-            m.c.query.append(ValidateQuery(m.c.query.toString()));
-            m.c.query.append("Nit like '%").append(txtNit.getText()).append("%' ");
-        }
-        
-        //Validate phone
-        if(!txtTel.getText().equals("")){
-            m.c.query.append(ValidateQuery(m.c.query.toString()));
-            m.c.query.append("Tel like '%").append(txtTel.getText()).append("%' ");
-        }
-        
-        //Validate mail
-        if(!txtMail.getText().equals("")){
-            m.c.query.append(ValidateQuery(m.c.query.toString()));
-            m.c.query.append("Maill like '%").append(txtMail.getText()).append("%' ");
-        }
-        
-        if(m.c.query.toString().equals("where ")){
-            m.c.query.delete(0, m.c.query.length());
-        }
-        
-        return m.c.query.toString();
     }
 
     @SuppressWarnings("unchecked")
@@ -97,6 +108,7 @@ public class Clients extends javax.swing.JPanel {
         jLabel5 = new javax.swing.JLabel();
         lstStatus = new javax.swing.JComboBox<>();
         chkChangeName = new javax.swing.JCheckBox();
+        btnRefresh = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setPreferredSize(new java.awt.Dimension(550, 450));
@@ -112,6 +124,11 @@ public class Clients extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tabClients.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabClientsMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tabClients);
 
         jLabel1.setText("Nombre:");
@@ -125,6 +142,11 @@ public class Clients extends javax.swing.JPanel {
         btnRegistered.setBackground(new java.awt.Color(0, 0, 102));
         btnRegistered.setForeground(new java.awt.Color(255, 255, 255));
         btnRegistered.setText("Registrar");
+        btnRegistered.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegisteredActionPerformed(evt);
+            }
+        });
 
         btnSearcher.setBackground(new java.awt.Color(0, 0, 102));
         btnSearcher.setForeground(new java.awt.Color(255, 255, 255));
@@ -151,6 +173,15 @@ public class Clients extends javax.swing.JPanel {
         chkChangeName.setBackground(new java.awt.Color(255, 255, 255));
         chkChangeName.setText("Cambiar nombre");
 
+        btnRefresh.setBackground(new java.awt.Color(0, 0, 102));
+        btnRefresh.setForeground(new java.awt.Color(255, 255, 255));
+        btnRefresh.setText("Refresh");
+        btnRefresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRefreshActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -175,12 +206,12 @@ public class Clients extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(chkChangeName)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(btnRegistered, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnSearcher, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(lstStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(btnRegistered, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnSearcher, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
+                            .addComponent(lstStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnRefresh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
@@ -213,14 +244,16 @@ public class Clients extends javax.swing.JPanel {
                                 .addComponent(btnRegistered)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(btnSearcher)
-                                .addGap(49, 49, 49)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnRefresh)
+                                .addGap(15, 15, 15)
                                 .addComponent(lstStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(111, 111, 111)
                                 .addComponent(jLabel5)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(chkChangeName)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
                 .addComponent(btnAdd)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -229,17 +262,102 @@ public class Clients extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        if(tabClients.getSelectedRow() < 0){
-            
+        int Row = tabClients.getSelectedRow();
+        
+        if(Row < 0){
+            JOptionPane.showMessageDialog(null, "Debe seleccionar un cliente para agregarlo a la factura.");
+            return;
         }
+        
+        if(tabClients.getValueAt(Row, 4).toString().equals("0")){
+            JOptionPane.showMessageDialog(null, "Este cliente está inactivo.");
+            return;
+        }
+        
+        m.bill.lblName.setText(tabClients.getValueAt(Row, 0).toString());
+        m.bill.lblNit.setText(tabClients.getValueAt(Row, 1).toString());
+        m.bill.lblTel.setText(tabClients.getValueAt(Row, 2).toString());
+        m.bill.lblMail.setText(tabClients.getValueAt(Row, 3).toString());
+        m.bill.Refresh();
+        m.btnBill.setEnabled(true);
+        
+        Refresh("");
+        JOptionPane.showMessageDialog(null, "Se ha agregado el cliente a la factura.");
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnSearcherActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearcherActionPerformed
-        Refresh(ValidateConditions());
+        m.c.query.delete(0, m.c.query.length());
+        m.c.query.append("where ");
+        
+        if(!txtName.getText().equals("")){
+            m.c.query.append(ValidateQuery(m.c.query.toString()));
+            m.c.query.append("Name like '%").append(txtName.getText()).append("%' ");
+        }        
+        if(!txtNit.getText().equals("")){
+            m.c.query.append(ValidateQuery(m.c.query.toString()));
+            m.c.query.append("Nit like '%").append(txtNit.getText()).append("%' ");
+        }
+        if(!txtTel.getText().equals("")){
+            m.c.query.append(ValidateQuery(m.c.query.toString()));
+            m.c.query.append("Tel like '%").append(txtTel.getText()).append("%' ");
+        }
+        if(!txtMail.getText().equals("")){
+            m.c.query.append(ValidateQuery(m.c.query.toString()));
+            m.c.query.append("Mail like '%").append(txtMail.getText()).append("%' ");
+        }
+        if(m.c.query.toString().equals("where ")){
+            m.c.query.delete(0, m.c.query.length());
+        }
+        
+        Refresh(m.c.query.toString());
     }//GEN-LAST:event_btnSearcherActionPerformed
+
+    private void btnRegisteredActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegisteredActionPerformed
+        if(JOptionPane.showConfirmDialog(null, "¿Está seguro que desea " + btnRegistered.getText() + " este cliente?", "", JOptionPane.OK_OPTION) != JOptionPane.OK_OPTION){
+            return;
+        }
+        
+        if(chkChangeName.isSelected()){
+            String newName;
+            try{
+                newName = m.c.getCleanText(JOptionPane.showInputDialog("ingrese el nuevo nombre del cliente:"));                
+            }catch(HeadlessException e){
+                Refresh("");
+                return;
+            }
+            
+            if(newName.equals("")){
+                JOptionPane.showMessageDialog(null, "El nombre no puede ser nulo.");
+                return;
+            }
+                
+            SaveData(newName);
+        }else{
+            SaveData(txtName.getText());
+        }
+    }//GEN-LAST:event_btnRegisteredActionPerformed
+
+    private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
+        Refresh("");
+    }//GEN-LAST:event_btnRefreshActionPerformed
+
+    private void tabClientsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabClientsMouseClicked
+        int Row = tabClients.getSelectedRow();
+        
+        txtName.setText(tabClients.getValueAt(Row, 0).toString());
+        txtNit.setText(tabClients.getValueAt(Row, 1).toString());
+        txtTel.setText(tabClients.getValueAt(Row, 2).toString());
+        txtMail.setText(tabClients.getValueAt(Row, 3).toString());
+        lstStatus.setSelectedIndex(Integer.parseInt(tabClients.getValueAt(Row, 4).toString()));
+        
+        txtName.setEnabled(false);
+        chkChangeName.setEnabled(true);
+        btnRegistered.setText("Actualizar");
+    }//GEN-LAST:event_tabClientsMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnRefresh;
     private javax.swing.JButton btnRegistered;
     private javax.swing.JButton btnSearcher;
     private javax.swing.JCheckBox chkChangeName;

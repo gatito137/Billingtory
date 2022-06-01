@@ -31,6 +31,7 @@ public class Menu extends javax.swing.JFrame {
     private void LockControls(){
         pnlBilling.setVisible(false);
         pnlInventory.setVisible(false);
+        btnBill.setEnabled(false);
     }
 
     @SuppressWarnings("unchecked")
@@ -347,6 +348,7 @@ public class Menu extends javax.swing.JFrame {
     private void btnBillActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBillActionPerformed
         bill.setSize(550, 450);
         bill.setLocation(0, 0);
+        bill.Refresh();
         
         pnlPrincipal.removeAll();
         pnlPrincipal.add(bill);
@@ -366,7 +368,7 @@ public class Menu extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnBill;
+    protected javax.swing.JButton btnBill;
     private javax.swing.JButton btnBilling;
     private javax.swing.JButton btnClient;
     private javax.swing.JButton btnInventory;

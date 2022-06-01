@@ -22,16 +22,15 @@ public class Sales extends javax.swing.JPanel implements Printable{
         Table.addColumn("SubTotal");
         
         tabSales.setModel(Table);
-        
-        lblDate.setText(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").format(LocalDateTime.now()));
     }
     
     protected void sendMenu(Menu menu){
         this.m = menu;
     }
     
-    protected String ValidateInvoice(){
+    protected void Refresh(){
         //Sum the subtotals
+        lblTotal.setText("0");
         for(int rows = 0; rows < tabSales.getRowCount(); rows++){
             lblTotal.setText(String.valueOf(Float.parseFloat(lblTotal.getText()) + Float.parseFloat(tabSales.getValueAt(rows, 6).toString())));
         }
@@ -39,26 +38,14 @@ public class Sales extends javax.swing.JPanel implements Printable{
         //Get correlative
         m.c.query.delete(0, m.c.query.length());
         m.c.query.append("select id from Invoices order by id desc limit 1;");
-        if(m.execute.getNat(m.c.query.toString()) == -1){
+        if(m.execute.getNat(m.c.query.toString()) < 0){
             lblCorrelative.setText("1");
         }else{
-            lblCorrelative.setText(String.valueOf(m.execute.getNat(m.c.query.toString() + 1)));
+            lblCorrelative.setText(String.valueOf(m.execute.getNat(m.c.query.toString()) + 1));
         }
         
-        if(lblName.getText().equals("[Name]")){
-            return "Debe ingresar el nombre del cliente.";
-        }
-        if(lblNit.getText().equals("[Nit]")){
-            return "Debe ingresar un nit válido.";
-        }
-        if(lblTel.getText().equals("Tel")){
-            return "Debe ingresar un teléfono válido";
-        }
-        if(lblMail.getText().equals("Mail")){
-            return "Debe ingresar un correo válido.";
-        }
-        
-        return "";
+        //Date
+        lblDate.setText(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").format(LocalDateTime.now()));
     }
 
     @SuppressWarnings("unchecked")
@@ -214,7 +201,7 @@ public class Sales extends javax.swing.JPanel implements Printable{
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblTel)
                             .addComponent(lblMail))
-                        .addGap(77, 77, 77)
+                        .addGap(53, 53, 53)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblDate)
                             .addGroup(layout.createSequentialGroup()
@@ -323,10 +310,10 @@ public class Sales extends javax.swing.JPanel implements Printable{
     private javax.swing.JLabel lblCorrelative;
     private javax.swing.JLabel lblDate;
     private javax.swing.JLabel lblLogo;
-    private javax.swing.JLabel lblMail;
-    private javax.swing.JLabel lblName;
-    private javax.swing.JLabel lblNit;
-    private javax.swing.JLabel lblTel;
+    protected javax.swing.JLabel lblMail;
+    protected javax.swing.JLabel lblName;
+    protected javax.swing.JLabel lblNit;
+    protected javax.swing.JLabel lblTel;
     private javax.swing.JLabel lblTotal;
     protected javax.swing.JTable tabSales;
     // End of variables declaration//GEN-END:variables
