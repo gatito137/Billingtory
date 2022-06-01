@@ -8,6 +8,7 @@ public class Menu extends javax.swing.JFrame {
     private final Laboratory laboratory = new Laboratory();
     private final Principle principles = new Principle();
     private final Searcher searcher = new Searcher();
+    private final Clients clients = new Clients();
     protected final Sales bill = new Sales();
     public final CommonUse c = new CommonUse();
     public final Bridge execute = new Bridge();
@@ -22,6 +23,7 @@ public class Menu extends javax.swing.JFrame {
         products.sendMenu(this);
         searcher.sendMenu(this);
         bill.sendMenu(this);
+        clients.sendMenu(this);
         
         LockControls();
     }
@@ -329,6 +331,15 @@ public class Menu extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSearcherActionPerformed
 
     private void btnClientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClientActionPerformed
+        clients.setSize(550, 450);
+        clients.setLocation(0, 0);
+        clients.Refresh("");
+        
+        pnlPrincipal.removeAll();
+        pnlPrincipal.add(clients);
+        pnlPrincipal.revalidate();
+        pnlPrincipal.repaint();
+        
         pnlBilling.setVisible(false);
         this.setTitle("Administrar clientes");
     }//GEN-LAST:event_btnClientActionPerformed
