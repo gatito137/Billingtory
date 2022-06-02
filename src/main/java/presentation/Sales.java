@@ -1,18 +1,51 @@
 package presentation;
 
-import java.awt.Image;
-import javax.swing.ImageIcon;
-import javax.swing.Icon;
+import java.awt.*;
+import java.awt.print.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
-public class Sales extends javax.swing.JPanel {
-    private Menu menu;
+public class Sales extends javax.swing.JPanel implements Printable{
+    private Menu m;
     
     public Sales() {
         initComponents();
+        DefaultTableModel Table = new DefaultTableModel();
+        Table.addColumn("Código");
+        Table.addColumn("Lote");
+        Table.addColumn("Descripción");
+        Table.addColumn("Unidades");
+        Table.addColumn("Precio");
+        Table.addColumn("Descuento");
+        Table.addColumn("SubTotal");
+        
+        tabSales.setModel(Table);
     }
     
     protected void sendMenu(Menu menu){
-        this.menu = menu;
+        this.m = menu;
+    }
+    
+    protected void Refresh(){
+        //Sum the subtotals
+        lblTotal.setText("0");
+        for(int rows = 0; rows < tabSales.getRowCount(); rows++){
+            lblTotal.setText(String.valueOf(Float.parseFloat(lblTotal.getText()) + Float.parseFloat(tabSales.getValueAt(rows, 6).toString())));
+        }
+        
+        //Get correlative
+        m.c.query.delete(0, m.c.query.length());
+        m.c.query.append("select id from Invoices order by id desc limit 1;");
+        if(m.execute.getNat(m.c.query.toString()) < 0){
+            lblCorrelative.setText("1");
+        }else{
+            lblCorrelative.setText(String.valueOf(m.execute.getNat(m.c.query.toString()) + 1));
+        }
+        
+        //Date
+        lblDate.setText(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").format(LocalDateTime.now()));
     }
 
     @SuppressWarnings("unchecked")
@@ -30,10 +63,10 @@ public class Sales extends javax.swing.JPanel {
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
+        lblName = new javax.swing.JLabel();
         lblNit = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tabSales = new javax.swing.JTable();
         lblTel = new javax.swing.JLabel();
         lblMail = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
@@ -41,6 +74,8 @@ public class Sales extends javax.swing.JPanel {
         btnPrint = new javax.swing.JButton();
         btnRemove = new javax.swing.JButton();
         lblLogo = new javax.swing.JLabel();
+        btnCancel = new javax.swing.JButton();
+        btnCharge = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setFont(new java.awt.Font("Serif", 0, 18)); // NOI18N
@@ -59,7 +94,7 @@ public class Sales extends javax.swing.JPanel {
 
         jLabel5.setText("Correlativo:");
 
-        lblCorrelative.setText("No.");
+        lblCorrelative.setText("[Correlative]");
 
         lblDate.setText("Date");
 
@@ -71,11 +106,11 @@ public class Sales extends javax.swing.JPanel {
 
         jLabel9.setText("Correo:");
 
-        jLabel10.setText("lblName");
+        lblName.setText("[Name]");
 
         lblNit.setText("[Nit]");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tabSales.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -86,7 +121,7 @@ public class Sales extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tabSales);
 
         lblTel.setText("[Tel]");
 
@@ -98,11 +133,43 @@ public class Sales extends javax.swing.JPanel {
         lblTotal.setFont(new java.awt.Font("Serif", 0, 16)); // NOI18N
         lblTotal.setText("[Total]");
 
+        btnPrint.setBackground(new java.awt.Color(0, 0, 102));
+        btnPrint.setForeground(new java.awt.Color(255, 255, 255));
         btnPrint.setText("Imprimir");
+        btnPrint.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPrintActionPerformed(evt);
+            }
+        });
 
+        btnRemove.setBackground(new java.awt.Color(0, 0, 102));
+        btnRemove.setForeground(new java.awt.Color(255, 255, 255));
         btnRemove.setText("Remover");
+        btnRemove.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveActionPerformed(evt);
+            }
+        });
 
         lblLogo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagine/logo.jpg"))); // NOI18N
+
+        btnCancel.setBackground(new java.awt.Color(0, 0, 102));
+        btnCancel.setForeground(new java.awt.Color(255, 255, 255));
+        btnCancel.setText("Anular");
+        btnCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelActionPerformed(evt);
+            }
+        });
+
+        btnCharge.setBackground(new java.awt.Color(0, 0, 102));
+        btnCharge.setForeground(new java.awt.Color(255, 255, 255));
+        btnCharge.setText("Cobrar");
+        btnCharge.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnChargeActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -130,9 +197,13 @@ public class Sales extends javax.swing.JPanel {
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 538, Short.MAX_VALUE)
                         .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(btnPrint, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnPrint)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnRemove, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnRemove)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnCancel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnCharge, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel11)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -144,7 +215,7 @@ public class Sales extends javax.swing.JPanel {
                             .addComponent(jLabel7))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel10)
+                            .addComponent(lblName)
                             .addComponent(lblNit))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -154,13 +225,14 @@ public class Sales extends javax.swing.JPanel {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblTel)
                             .addComponent(lblMail))
-                        .addGap(77, 77, 77)
+                        .addGap(53, 53, 53)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblDate)
-                            .addComponent(jLabel5))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblCorrelative)
-                        .addGap(41, 41, 41))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(lblCorrelative)))
+                        .addGap(35, 35, 35))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -178,18 +250,19 @@ public class Sales extends javax.swing.JPanel {
                     .addComponent(lblLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(lblCorrelative)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(jLabel6)
-                                .addComponent(jLabel10))
+                                .addComponent(lblName))
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(jLabel7)
                                 .addComponent(lblNit)))
                         .addGroup(layout.createSequentialGroup()
-                            .addComponent(jLabel5)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel5)
+                                .addComponent(lblCorrelative))
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(lblDate)))
                     .addGroup(layout.createSequentialGroup()
@@ -207,16 +280,83 @@ public class Sales extends javax.swing.JPanel {
                     .addComponent(jLabel11)
                     .addComponent(lblTotal)
                     .addComponent(btnPrint)
-                    .addComponent(btnRemove))
+                    .addComponent(btnRemove)
+                    .addComponent(btnCancel)
+                    .addComponent(btnCharge))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
+        int Row = tabSales.getSelectedRow();
+        if(Row < 0){
+            JOptionPane.showMessageDialog(null, "Debe seleccionar un producto para eliminar.");
+            return;
+        }
+        
+        if(JOptionPane.showConfirmDialog(null,"¿Está seguro que desea eliminar esta venta de la factura?", "", JOptionPane.OK_OPTION) != JOptionPane.OK_OPTION){
+            return;
+        }
+        
+        DefaultTableModel removeRow = (DefaultTableModel) tabSales.getModel();
+        removeRow.removeRow(Row);
+        tabSales.setModel(removeRow);
+    }//GEN-LAST:event_btnRemoveActionPerformed
+
+    private void btnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintActionPerformed
+        lblDate.setText(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").format(LocalDateTime.now()));
+        
+        PrinterJob job = PrinterJob.getPrinterJob();
+        
+        if(job.printDialog()){
+            try{
+                job.print();
+            }catch(PrinterException e){
+                JOptionPane.showMessageDialog(null, "No se ha podido realizar la impresión.");
+            }
+        }else{
+            JOptionPane.showMessageDialog(null, "Se ha cancelado la impresión.");
+        }
+    }//GEN-LAST:event_btnPrintActionPerformed
+
+    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
+        if(JOptionPane.showConfirmDialog(null, "¿Está seguro que desea eliminar la factura?", "", JOptionPane.OK_OPTION) != JOptionPane.OK_OPTION){
+            return;
+        }
+        
+        tabSales.setModel(new DefaultTableModel());
+        m.pnlPrincipal.removeAll();
+        m.pnlPrincipal.revalidate();
+        m.pnlPrincipal.repaint();
+        m.btnBill.setEnabled(false);
+    }//GEN-LAST:event_btnCancelActionPerformed
+
+    private void btnChargeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChargeActionPerformed
+        Refresh();
+        
+        if(JOptionPane.showConfirmDialog(null, "¿Está seguro que desea realizar el cobro de esta factura?", null, JOptionPane.OK_OPTION) != JOptionPane.OK_OPTION){
+            return;
+        }
+        if(lblTotal.getText().equals("0")){
+            JOptionPane.showMessageDialog(null, "No se puede tener un cobro cero (0)");
+            return;
+        }
+        
+        m.charges.setSize(550,450);
+        m.charges.setLocation(0, 0);
+        m.charges.Refresh();
+        m.pnlPrincipal.removeAll();
+        m.pnlPrincipal.add(m.charges);
+        m.pnlPrincipal.revalidate();
+        m.pnlPrincipal.repaint();
+    }//GEN-LAST:event_btnChargeActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCancel;
+    private javax.swing.JButton btnCharge;
     private javax.swing.JButton btnPrint;
     private javax.swing.JButton btnRemove;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -227,13 +367,27 @@ public class Sales extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JLabel lblCorrelative;
+    protected javax.swing.JLabel lblCorrelative;
     private javax.swing.JLabel lblDate;
     private javax.swing.JLabel lblLogo;
-    private javax.swing.JLabel lblMail;
-    private javax.swing.JLabel lblNit;
-    private javax.swing.JLabel lblTel;
-    private javax.swing.JLabel lblTotal;
+    protected javax.swing.JLabel lblMail;
+    protected javax.swing.JLabel lblName;
+    protected javax.swing.JLabel lblNit;
+    protected javax.swing.JLabel lblTel;
+    protected javax.swing.JLabel lblTotal;
+    protected javax.swing.JTable tabSales;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public int print(Graphics grphcs, PageFormat pf, int i) throws PrinterException {
+        if(i == 0){
+            Graphics2D newGraphic = (Graphics2D) grphcs;
+            newGraphic.translate(pf.getImageableX(), pf.getImageableY());
+            printAll(newGraphic);
+            
+            return PAGE_EXISTS;
+        }else{
+            return NO_SUCH_PAGE;
+        }
+    }
 }

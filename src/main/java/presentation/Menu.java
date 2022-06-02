@@ -8,7 +8,9 @@ public class Menu extends javax.swing.JFrame {
     private final Laboratory laboratory = new Laboratory();
     private final Principle principles = new Principle();
     private final Searcher searcher = new Searcher();
-    private final Sales bill = new Sales();
+    private final Clients clients = new Clients();
+    protected final Sales bill = new Sales();
+    protected final Charges charges = new Charges();
     public final CommonUse c = new CommonUse();
     public final Bridge execute = new Bridge();
     
@@ -22,6 +24,8 @@ public class Menu extends javax.swing.JFrame {
         products.sendMenu(this);
         searcher.sendMenu(this);
         bill.sendMenu(this);
+        clients.sendMenu(this);
+        charges.sendMen(this);
         
         LockControls();
     }
@@ -29,6 +33,7 @@ public class Menu extends javax.swing.JFrame {
     private void LockControls(){
         pnlBilling.setVisible(false);
         pnlInventory.setVisible(false);
+        btnBill.setEnabled(false);
     }
 
     @SuppressWarnings("unchecked")
@@ -329,6 +334,15 @@ public class Menu extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSearcherActionPerformed
 
     private void btnClientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClientActionPerformed
+        clients.setSize(550, 450);
+        clients.setLocation(0, 0);
+        clients.Refresh("");
+        
+        pnlPrincipal.removeAll();
+        pnlPrincipal.add(clients);
+        pnlPrincipal.revalidate();
+        pnlPrincipal.repaint();
+        
         pnlBilling.setVisible(false);
         this.setTitle("Administrar clientes");
     }//GEN-LAST:event_btnClientActionPerformed
@@ -336,6 +350,7 @@ public class Menu extends javax.swing.JFrame {
     private void btnBillActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBillActionPerformed
         bill.setSize(550, 450);
         bill.setLocation(0, 0);
+        bill.Refresh();
         
         pnlPrincipal.removeAll();
         pnlPrincipal.add(bill);
@@ -355,7 +370,7 @@ public class Menu extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnBill;
+    protected javax.swing.JButton btnBill;
     private javax.swing.JButton btnBilling;
     private javax.swing.JButton btnClient;
     private javax.swing.JButton btnInventory;
@@ -366,6 +381,6 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel pnlBilling;
     private javax.swing.JPanel pnlInventory;
-    private javax.swing.JPanel pnlPrincipal;
+    protected javax.swing.JPanel pnlPrincipal;
     // End of variables declaration//GEN-END:variables
 }

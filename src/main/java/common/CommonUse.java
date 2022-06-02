@@ -45,4 +45,34 @@ public class CommonUse {
             }
         }
     }
+    
+    public String validateMail(String mail){
+        mail = getCleanText(mail);
+        
+        if(mail.indexOf("@") == 0){
+            return "";
+        }
+        
+        if(mail.substring(0, mail.indexOf("@")).length() < 4 && mail.substring(mail.indexOf("@") + 1, mail.length()).length() < 5){
+            return "";
+        }
+        
+        if(CountCaracteres(mail.substring(mail.indexOf("@"), mail.length()), ".") != 1){
+            return "";
+        }
+        
+        return mail;
+    }
+    
+    private int CountCaracteres(String Text, String Caracter){
+        int Counter = 0;
+        
+        for(int i = 0; i < Text.length(); i++){
+            if(Text.substring(i, i+1).equals(Caracter)){
+                Counter++;
+            }
+        }
+        
+        return Counter;
+    }
 }
