@@ -10,6 +10,7 @@ public class Menu extends javax.swing.JFrame {
     private final Searcher searcher = new Searcher();
     private final Clients clients = new Clients();
     protected final Sales bill = new Sales();
+    protected final Charges charges = new Charges();
     public final CommonUse c = new CommonUse();
     public final Bridge execute = new Bridge();
     
@@ -24,6 +25,7 @@ public class Menu extends javax.swing.JFrame {
         searcher.sendMenu(this);
         bill.sendMenu(this);
         clients.sendMenu(this);
+        charges.sendMen(this);
         
         LockControls();
     }
@@ -379,6 +381,6 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel pnlBilling;
     private javax.swing.JPanel pnlInventory;
-    private javax.swing.JPanel pnlPrincipal;
+    protected javax.swing.JPanel pnlPrincipal;
     // End of variables declaration//GEN-END:variables
 }

@@ -74,6 +74,8 @@ public class Sales extends javax.swing.JPanel implements Printable{
         btnPrint = new javax.swing.JButton();
         btnRemove = new javax.swing.JButton();
         lblLogo = new javax.swing.JLabel();
+        btnCancel = new javax.swing.JButton();
+        btnCharge = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setFont(new java.awt.Font("Serif", 0, 18)); // NOI18N
@@ -151,6 +153,24 @@ public class Sales extends javax.swing.JPanel implements Printable{
 
         lblLogo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagine/logo.jpg"))); // NOI18N
 
+        btnCancel.setBackground(new java.awt.Color(0, 0, 102));
+        btnCancel.setForeground(new java.awt.Color(255, 255, 255));
+        btnCancel.setText("Anular");
+        btnCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelActionPerformed(evt);
+            }
+        });
+
+        btnCharge.setBackground(new java.awt.Color(0, 0, 102));
+        btnCharge.setForeground(new java.awt.Color(255, 255, 255));
+        btnCharge.setText("Cobrar");
+        btnCharge.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnChargeActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -177,9 +197,13 @@ public class Sales extends javax.swing.JPanel implements Printable{
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 538, Short.MAX_VALUE)
                         .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(btnPrint, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnPrint)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnRemove, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnRemove)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnCancel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnCharge, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel11)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -256,7 +280,9 @@ public class Sales extends javax.swing.JPanel implements Printable{
                     .addComponent(jLabel11)
                     .addComponent(lblTotal)
                     .addComponent(btnPrint)
-                    .addComponent(btnRemove))
+                    .addComponent(btnRemove)
+                    .addComponent(btnCancel)
+                    .addComponent(btnCharge))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -293,7 +319,41 @@ public class Sales extends javax.swing.JPanel implements Printable{
         }
     }//GEN-LAST:event_btnPrintActionPerformed
 
+    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
+        if(JOptionPane.showConfirmDialog(null, "¿Está seguro que desea eliminar la factura?", "", JOptionPane.OK_OPTION) != JOptionPane.OK_OPTION){
+            return;
+        }
+        
+        tabSales.setModel(new DefaultTableModel());
+        m.pnlPrincipal.removeAll();
+        m.pnlPrincipal.revalidate();
+        m.pnlPrincipal.repaint();
+        m.btnBill.setEnabled(false);
+    }//GEN-LAST:event_btnCancelActionPerformed
+
+    private void btnChargeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChargeActionPerformed
+        Refresh();
+        
+        if(JOptionPane.showConfirmDialog(null, "¿Está seguro que desea realizar el cobro de esta factura?", null, JOptionPane.OK_OPTION) != JOptionPane.OK_OPTION){
+            return;
+        }
+        if(lblTotal.getText().equals("0")){
+            JOptionPane.showMessageDialog(null, "No se puede tener un cobro cero (0)");
+            return;
+        }
+        
+        m.charges.setSize(550,450);
+        m.charges.setLocation(0, 0);
+        m.charges.Refresh();
+        m.pnlPrincipal.removeAll();
+        m.pnlPrincipal.add(m.charges);
+        m.pnlPrincipal.revalidate();
+        m.pnlPrincipal.repaint();
+    }//GEN-LAST:event_btnChargeActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCancel;
+    private javax.swing.JButton btnCharge;
     private javax.swing.JButton btnPrint;
     private javax.swing.JButton btnRemove;
     private javax.swing.JLabel jLabel1;
@@ -307,14 +367,14 @@ public class Sales extends javax.swing.JPanel implements Printable{
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel lblCorrelative;
+    protected javax.swing.JLabel lblCorrelative;
     private javax.swing.JLabel lblDate;
     private javax.swing.JLabel lblLogo;
     protected javax.swing.JLabel lblMail;
     protected javax.swing.JLabel lblName;
     protected javax.swing.JLabel lblNit;
     protected javax.swing.JLabel lblTel;
-    private javax.swing.JLabel lblTotal;
+    protected javax.swing.JLabel lblTotal;
     protected javax.swing.JTable tabSales;
     // End of variables declaration//GEN-END:variables
 
