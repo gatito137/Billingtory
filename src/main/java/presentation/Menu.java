@@ -1,7 +1,8 @@
 package presentation;
 
-import common.CommonUse;
+import common.*;
 import bridge.Bridge;
+import javax.swing.JOptionPane;
 
 public class Menu extends javax.swing.JFrame {
     private final Products products = new Products();
@@ -9,9 +10,11 @@ public class Menu extends javax.swing.JFrame {
     private final Principle principles = new Principle();
     private final Searcher searcher = new Searcher();
     private final Clients clients = new Clients();
+    private final LogIn login = new LogIn();
     protected final Sales bill = new Sales();
     protected final Charges charges = new Charges();
     public final CommonUse c = new CommonUse();
+    public final Cache cache = new Cache();
     public final Bridge execute = new Bridge();
     
     public Menu() {
@@ -26,14 +29,48 @@ public class Menu extends javax.swing.JFrame {
         bill.sendMenu(this);
         clients.sendMenu(this);
         charges.sendMen(this);
-        
+        login.sendMenu(this);
+                
         LockControls();
+        Loader load = new Loader();
+        this.setVisible(false);
+        load.sendMenu(this);
+        load.setVisible(true);
+        load.run();
     }
     
     private void LockControls(){
         pnlBilling.setVisible(false);
         pnlInventory.setVisible(false);
-        btnBill.setEnabled(false);
+        btnBilling.setVisible(false);
+        btnInventory.setVisible(false);
+        btnLogOut.setEnabled(false);
+        
+        login.setSize(550, 450);
+        login.setLocation(0, 0);
+        login.Refresh();
+        pnlPrincipal.removeAll();
+        pnlPrincipal.add(login);
+        pnlPrincipal.revalidate();
+        pnlPrincipal.repaint();
+    }
+    
+    protected void UnlockControls(){
+        this.setTitle("Menú principal");
+        
+        switch(cache.getPermission()){
+            case 6 ->btnBilling.setVisible(true);
+            case 7 -> btnInventory.setVisible(true);
+            default ->{
+                btnBilling.setVisible(true);
+                btnInventory.setVisible(true);
+            }
+        }
+        
+        btnLogOut.setEnabled(true);
+        pnlPrincipal.removeAll();
+        pnlPrincipal.revalidate();
+        pnlPrincipal.repaint();
     }
 
     @SuppressWarnings("unchecked")
@@ -52,6 +89,7 @@ public class Menu extends javax.swing.JFrame {
         btnSearcher = new javax.swing.JButton();
         btnClient = new javax.swing.JButton();
         btnBill = new javax.swing.JButton();
+        btnLogOut = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -205,6 +243,16 @@ public class Menu extends javax.swing.JFrame {
                 .addComponent(btnBill))
         );
 
+        btnLogOut.setBackground(new java.awt.Color(0, 0, 51));
+        btnLogOut.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnLogOut.setForeground(new java.awt.Color(255, 255, 255));
+        btnLogOut.setText("LogOut");
+        btnLogOut.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLogOutActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -223,7 +271,11 @@ public class Menu extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(33, 33, 33)
                         .addComponent(pnlBilling, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(6, 6, 6))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(btnLogOut, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -236,7 +288,9 @@ public class Menu extends javax.swing.JFrame {
                 .addComponent(btnBilling, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(6, 6, 6)
                 .addComponent(pnlBilling, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(116, 116, 116))
+                .addGap(18, 18, 18)
+                .addComponent(btnLogOut, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -361,6 +415,16 @@ public class Menu extends javax.swing.JFrame {
         this.setTitle("Administrar factura");
     }//GEN-LAST:event_btnBillActionPerformed
 
+    private void btnLogOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogOutActionPerformed
+        if(JOptionPane.showConfirmDialog(null, "¿Está seguro que desea salir del sistema?", "", JOptionPane.OK_OPTION) != JOptionPane.OK_OPTION){
+            return;
+        }
+        
+        cache.setPermission(0);
+        cache.setUser(0);
+        LockControls();
+    }//GEN-LAST:event_btnLogOutActionPerformed
+
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -375,6 +439,7 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JButton btnClient;
     private javax.swing.JButton btnInventory;
     private javax.swing.JButton btnLabs;
+    private javax.swing.JButton btnLogOut;
     private javax.swing.JButton btnPrinciple;
     private javax.swing.JButton btnProducts;
     private javax.swing.JButton btnSearcher;
