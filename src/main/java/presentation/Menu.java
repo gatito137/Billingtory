@@ -42,9 +42,11 @@ public class Menu extends javax.swing.JFrame {
     private void LockControls(){
         pnlBilling.setVisible(false);
         pnlInventory.setVisible(false);
+        pnlAdmin.setVisible(false);
         btnBilling.setVisible(false);
         btnInventory.setVisible(false);
         btnLogOut.setEnabled(false);
+        btnAdmin.setVisible(false);
         
         login.setSize(550, 450);
         login.setLocation(0, 0);
@@ -64,6 +66,7 @@ public class Menu extends javax.swing.JFrame {
             default ->{
                 btnBilling.setVisible(true);
                 btnInventory.setVisible(true);
+                btnAdmin.setVisible(true);
             }
         }
         
@@ -90,6 +93,10 @@ public class Menu extends javax.swing.JFrame {
         btnClient = new javax.swing.JButton();
         btnBill = new javax.swing.JButton();
         btnLogOut = new javax.swing.JButton();
+        btnAdmin = new javax.swing.JButton();
+        pnlAdmin = new javax.swing.JPanel();
+        btnAdminSales = new javax.swing.JButton();
+        btnAdminProducts = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -253,6 +260,33 @@ public class Menu extends javax.swing.JFrame {
             }
         });
 
+        btnAdmin.setBackground(new java.awt.Color(0, 0, 153));
+        btnAdmin.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        btnAdmin.setForeground(new java.awt.Color(255, 255, 255));
+        btnAdmin.setText("Administración");
+        btnAdmin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAdminActionPerformed(evt);
+            }
+        });
+
+        pnlAdmin.setBackground(new java.awt.Color(0, 102, 204));
+        pnlAdmin.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        btnAdminSales.setBackground(new java.awt.Color(0, 0, 153));
+        btnAdminSales.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnAdminSales.setForeground(new java.awt.Color(255, 255, 255));
+        btnAdminSales.setText("Ventas");
+        btnAdminSales.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        pnlAdmin.add(btnAdminSales, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 0, 283, -1));
+
+        btnAdminProducts.setBackground(new java.awt.Color(0, 0, 153));
+        btnAdminProducts.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnAdminProducts.setForeground(new java.awt.Color(255, 255, 255));
+        btnAdminProducts.setText("Productos");
+        btnAdminProducts.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        pnlAdmin.add(btnAdminProducts, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 30, 283, -1));
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -272,9 +306,16 @@ public class Menu extends javax.swing.JFrame {
                         .addGap(33, 33, 33)
                         .addComponent(pnlBilling, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(btnLogOut, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(pnlAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnLogOut, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnAdmin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -289,7 +330,11 @@ public class Menu extends javax.swing.JFrame {
                 .addGap(6, 6, 6)
                 .addComponent(pnlBilling, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(btnLogOut, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnAdmin)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pnlAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
+                .addComponent(btnLogOut)
                 .addContainerGap())
         );
 
@@ -305,7 +350,7 @@ public class Menu extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(pnlPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
+            .addComponent(pnlPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
         );
 
         pack();
@@ -319,6 +364,7 @@ public class Menu extends javax.swing.JFrame {
         }
         
         pnlBilling.setVisible(false);
+        pnlAdmin.setVisible(false);
     }//GEN-LAST:event_btnInventoryActionPerformed
 
     private void btnBillingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBillingActionPerformed
@@ -329,6 +375,7 @@ public class Menu extends javax.swing.JFrame {
         }
         
         pnlInventory.setVisible(false);
+        pnlAdmin.setVisible(false);
     }//GEN-LAST:event_btnBillingActionPerformed
 
     private void btnProductsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProductsActionPerformed
@@ -425,6 +472,17 @@ public class Menu extends javax.swing.JFrame {
         LockControls();
     }//GEN-LAST:event_btnLogOutActionPerformed
 
+    private void btnAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdminActionPerformed
+        if(pnlAdmin.isVisible()){
+            pnlAdmin.setVisible(false);
+        }else{
+            pnlAdmin.setVisible(true);
+        }
+        
+        pnlBilling.setVisible(false);
+        pnlInventory.setVisible(false);
+    }//GEN-LAST:event_btnAdminActionPerformed
+
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -434,6 +492,9 @@ public class Menu extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAdmin;
+    private javax.swing.JButton btnAdminProducts;
+    private javax.swing.JButton btnAdminSales;
     protected javax.swing.JButton btnBill;
     private javax.swing.JButton btnBilling;
     private javax.swing.JButton btnClient;
@@ -444,6 +505,7 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JButton btnProducts;
     private javax.swing.JButton btnSearcher;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel pnlAdmin;
     private javax.swing.JPanel pnlBilling;
     private javax.swing.JPanel pnlInventory;
     protected javax.swing.JPanel pnlPrincipal;
